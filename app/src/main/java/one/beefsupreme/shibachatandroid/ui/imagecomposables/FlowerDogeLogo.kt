@@ -60,9 +60,9 @@ fun FlowerDogeLogo() {
       painter = painterResource(R.drawable.flower_shiba_cutout_150x150),
       contentDescription = "Doge with flower on head",
       modifier = Modifier
-        .size(149.dp)
+        .size(150.dp)
         // Aligns in the x-axis then on the y-axis
-        .align(BiasAbsoluteAlignment((-0.2).toFloat(), (-0.45).toFloat())),
+        .align(BiasAbsoluteAlignment((-0.15).toFloat(), (-0.35).toFloat())),
     )
   }
 }
