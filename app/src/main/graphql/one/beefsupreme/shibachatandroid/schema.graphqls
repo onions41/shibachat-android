@@ -1,0 +1,13 @@
+type Query {
+  example1: Person!
+}
+
+type Person {
+  name: String!
+
+  height: Int!
+}
+
+schema {
+  query: Query
+}
