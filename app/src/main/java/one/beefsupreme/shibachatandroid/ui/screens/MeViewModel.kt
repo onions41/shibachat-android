@@ -20,6 +20,7 @@ class MeViewModel: ViewModel() {
   fun makeRequest() {
     // I'll probably end up using flow instead of this coroutine
     viewModelScope.launch {
+      // Need to catch errors here.
       val response = apolloClient.query(BingBongQuery()).execute()
       val name = response.data?.example1?.name ?: "response.data was null"
       Log.v(TAG, name)
