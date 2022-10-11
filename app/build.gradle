@@ -26,6 +26,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            buildConfigField("String", "SERVER_URL", "\"http://192.168.0.243:9611\"")
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
