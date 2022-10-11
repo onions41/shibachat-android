@@ -10,16 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import one.beefsupreme.shibachatandroid.ui.imagecomposables.FlowerDogeLogo
 import one.beefsupreme.shibachatandroid.ui.theme.ShibachatAndroidTheme
 
 @Composable
 fun FirstScreen(
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  meViewModel: MeViewModel = viewModel()
 ) {
   Surface(
     color = MaterialTheme.colors.primary,
-    modifier = Modifier.fillMaxSize()
+    modifier = modifier.fillMaxSize()
   ) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally
@@ -29,10 +31,11 @@ fun FirstScreen(
       // The one button on this page
       Button(
         enabled = true,
-        onClick = {},
+        onClick = { meViewModel.makeRequest() },
       ) {
         Text("Click me")
       }
+      Text(meViewModel.myState)
     }
   }
 }
