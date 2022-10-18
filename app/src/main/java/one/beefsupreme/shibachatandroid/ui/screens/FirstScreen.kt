@@ -1,5 +1,6 @@
 package one.beefsupreme.shibachatandroid.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
@@ -24,18 +25,37 @@ fun FirstScreen(
     modifier = modifier.fillMaxSize()
   ) {
     Column(
-      horizontalAlignment = Alignment.CenterHorizontally
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.SpaceAround
     ) {
       Text("First Line I am Hello")
       FlowerDogeLogo()
-      // The one button on this page
+      // The first button, makes the BingBongQuery
       Button(
-        enabled = true,
+        enabled = false,
         onClick = { meViewModel.makeRequest() },
       ) {
         Text("Click me")
       }
       Text(meViewModel.myState)
+      Button(
+        enabled = true,
+        onClick = { meViewModel.protected() }
+      ) {
+        Text("Protected")
+      }
+      Button(
+        enabled = true,
+        onClick = { meViewModel.unprotected() }
+      ) {
+        Text("Unprotected")
+      }
+      Button(
+        enabled = true,
+        onClick = { meViewModel.login() }
+      ) {
+        Text("Login")
+      }
     }
   }
 }
