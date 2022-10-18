@@ -1,5 +1,19 @@
+type Mutation {
+  login(nickname: String!, password: String!): LoginResponse!
+}
+
+type LoginResponse {
+  accessToken: String
+}
+
 type Query {
   example1: Person!
+
+  findUser(nickname: String!): User
+
+  protected: Boolean!
+
+  unprotected: Boolean!
 }
 
 type Person {
@@ -8,6 +22,15 @@ type Person {
   height: Int!
 }
 
+type User {
+  id: Int!
+
+  nickname: String!
+
+  password: String!
+}
+
 schema {
   query: Query
+  mutation: Mutation
 }
