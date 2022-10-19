@@ -7,15 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
-// accessToken
-object AccessTokenStorage {
-  private var accessToken: String = "This is the sample access token blah"
-  fun getAccessTok(): String = accessToken
-  fun setAccessTok(newToken: String) {
-    accessToken = newToken
-  }
-}
-
 // Interceptor class
 class AuthInterceptor: Interceptor {
 

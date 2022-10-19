@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import one.beefsupreme.shibachatandroid.AccessTokenStorage
 import one.beefsupreme.shibachatandroid.BingBongQuery
 import one.beefsupreme.shibachatandroid.LoginMutation
 import one.beefsupreme.shibachatandroid.ProtectedQuery
@@ -55,8 +56,17 @@ class MeViewModel: ViewModel() {
     viewModelScope.launch {
       // Need to catch errors here.
       val response = apolloClient.mutation(LoginMutation("Homer", "123456")).execute()
-      val data = response.data?.login
-      Log.v(TAG, data?.accessToken ?: "accessToken was null" )
+
+      val newAccessToken: String? = response.data?.login?.accessToken
+
+      if (newAccessToken != null) {
+        Log.v(TAG, "Got a new access token from the login mutation!")
+        // Stores the access token fetched from the Login mutation
+        AccessTokenStorage.setAccessTok(newAccessToken)
+      } else {
+        Log.v(TAG, "No newAccessToken was returned by the login mutation")
+      }
+
       myState = "You clicked the button"
     }
   }
