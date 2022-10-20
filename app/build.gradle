@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.apollographql.apollo3' version '3.6.2'
+
+    // Dagger-Hilt
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -51,10 +55,17 @@ android {
 }
 
 dependencies {
+    implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'org.jetbrains.kotlin:kotlin-reflect:1.7.20'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
     implementation 'com.apollographql.apollo3:apollo-runtime:3.6.2'
+
+    // Dagger-Hilt
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
+
+    // Initial
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
     implementation 'androidx.activity:activity-compose:1.5.1'
@@ -71,4 +82,8 @@ dependencies {
 
 apollo {
     packageName.set('one.beefsupreme.shibachatandroid')
+}
+
+kapt {
+    correctErrorTypes true
 }
