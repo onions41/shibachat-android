@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import one.beefsupreme.shibachatandroid.ui.MeViewModel
 import one.beefsupreme.shibachatandroid.ui.imagecomposables.FlowerDogeLogo
 import one.beefsupreme.shibachatandroid.ui.theme.ShibachatAndroidTheme
 
@@ -37,7 +38,7 @@ fun FirstScreen(
       ) {
         Text("Click me")
       }
-      Text(meViewModel.myState)
+      Text(text = meViewModel.myState)
       Button(
         enabled = true,
         onClick = { meViewModel.protected() }
