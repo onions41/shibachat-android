@@ -1,10 +1,8 @@
-package one.beefsupreme.shibachatandroid.ui.screens
+package one.beefsupreme.shibachatandroid.ui
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import one.beefsupreme.shibachatandroid.AccessTokenStorage
@@ -12,11 +10,18 @@ import one.beefsupreme.shibachatandroid.BingBongQuery
 import one.beefsupreme.shibachatandroid.LoginMutation
 import one.beefsupreme.shibachatandroid.ProtectedQuery
 import one.beefsupreme.shibachatandroid.UnprotectedQuery
-import one.beefsupreme.shibachatandroid.apolloClient
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import com.apollographql.apollo3.ApolloClient
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 private const val TAG = "**MeViewModel**"
 
-class MeViewModel: ViewModel() {
+@HiltViewModel
+class MeViewModel @Inject constructor(
+  private val apolloClient: ApolloClient
+): ViewModel() {
   // Just using the basic state for now. Read only
   var myState by mutableStateOf("Nothing here yet")
     private set
