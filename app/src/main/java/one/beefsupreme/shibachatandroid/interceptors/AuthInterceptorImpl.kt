@@ -13,7 +13,7 @@ private const val TAG = "**AuthInterceptor**"
  * Attaches the access token from AccessTokenStorage
  * to header.access-token of every request.
  */
-class AuthInterceptorImpl @Inject constructor(): AuthInterceptor {
+class AuthInterceptorImpl @Inject constructor(): Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
     val accessToken = AccessTokenStorage.getAccessTok()
