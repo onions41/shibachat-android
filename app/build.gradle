@@ -72,6 +72,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
     implementation 'com.apollographql.apollo3:apollo-runtime:3.6.2'
 
+    // Compose-Destinations
+    implementation 'io.github.raamcosta.compose-destinations:core:1.6.22-beta'
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.6.22-beta'
+
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.14.0'
