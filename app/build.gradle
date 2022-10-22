@@ -2,7 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.apollographql.apollo3' version '3.6.2'
-
+    // KSP for Compose-Destinations
+    id 'com.google.devtools.ksp' version '1.7.0-1.0.6'
     // Dagger-Hilt
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
@@ -50,6 +51,15 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    // Added for Compose-Destinations to include the generated folders to all variants.
+    applicationVariants.all { variant ->
+        kotlin.sourceSets {
+            getByName(variant.name) {
+                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
+            }
         }
     }
 }
