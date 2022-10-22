@@ -63,6 +63,6 @@ fun FirstScreen(
 
 @Preview(showBackground = true, widthDp = 260, heightDp = 400)
 @Composable
-fun DefaultPreview() {
+fun FirstScreenPreview() {
   ShibachatAndroidTheme { FirstScreen() }
 }
