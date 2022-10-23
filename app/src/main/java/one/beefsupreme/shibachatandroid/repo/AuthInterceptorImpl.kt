@@ -1,4 +1,4 @@
-package one.beefsupreme.shibachatandroid.interceptors
+package one.beefsupreme.shibachatandroid.repo
 
 import android.util.Log
 import okhttp3.Interceptor
