@@ -59,7 +59,7 @@ class MeViewModel @Inject constructor(
 
   fun login() {
     viewModelScope.launch {
-      // Need to catch errors here.
+      // Need to catch errors here, otherwise the app will crash if the server is not on.
       val response = apolloClient.mutation(LoginMutation("Homer", "123456")).execute()
 
       val newAccessToken: String? = response.data?.login?.accessToken
