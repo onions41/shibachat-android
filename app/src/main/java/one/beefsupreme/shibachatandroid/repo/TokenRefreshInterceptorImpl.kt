@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import one.beefsupreme.shibachatandroid.AccessTokenStorage
 import one.beefsupreme.shibachatandroid.AppDispatchers
 import java.util.Date
 import javax.inject.Inject
@@ -31,7 +30,8 @@ private const val TAG = "**TokenRefreshInterceptor**"
  */
 class TokenRefreshInterceptorImpl @Inject constructor(
   @TokenRefreshOkHttpClient val okHttpClient: OkHttpClient,
-  private val appDispatchers: AppDispatchers
+  private val appDispatchers: AppDispatchers,
+  val loginState: LoginStateImpl
 ): Interceptor {
   // Mutex for blocking subsequent responses
   private val mutex = Mutex()
@@ -57,19 +57,27 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             // Empty string for the request body
             .post("".toRequestBody("text/x-markdown; charset=utf-8".toMediaType()))
             .build()
+
           val response: Response? = try {
             okHttpClient.newCall(request).execute()
           } catch (error: IOException) {
+            loginState.logout()
+            // I should log the Exception instead
             Log.v(TAG, "Your refresh token was invalid. You need to log in again")
             null
           }
 
-          // Sets AccessTokenStorage to "" or an actual access token string
-          if (response == null) {
-            AccessTokenStorage.setAccessTok("")
-          } else {
-            val gist = gistJsonAdapter.fromJson(response.body!!.source())
-            AccessTokenStorage.setAccessTok(gist?.accessToken ?: "")
+          if (response != null) {
+            val newAccessToken = try {
+              gistJsonAdapter.fromJson(response.body!!.source())!!.accessToken
+            } catch (error: NullPointerException) {
+              ""
+            }
+            if (newAccessToken == "") {
+              loginState.logout()
+            } else {
+              loginState.login(newAccessToken)
+            }
           }
         }
       }
@@ -83,7 +91,7 @@ class TokenRefreshInterceptorImpl @Inject constructor(
   // that is invalid due to being expired. Returns false if the access token
   // is an empty string or if the access token is still valid.
   private fun isAccessTokenInvalid(): Boolean {
-    val accessToken = AccessTokenStorage.getAccessTok()
+    val accessToken = loginState.accessToken
     // There is no token
     if (accessToken == "") return false
 

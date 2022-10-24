@@ -15,11 +15,13 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import one.beefsupreme.shibachatandroid.BuildConfig
-import one.beefsupreme.shibachatandroid.interceptors.AuthInterceptorImpl
-import one.beefsupreme.shibachatandroid.interceptors.TokenRefreshInterceptorImpl
+import one.beefsupreme.shibachatandroid.repo.AuthInterceptorImpl
+import one.beefsupreme.shibachatandroid.repo.LoginStateImpl
+import one.beefsupreme.shibachatandroid.repo.TokenRefreshInterceptorImpl
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+// Interceptor implementations
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AuthInterceptor
@@ -28,6 +30,7 @@ annotation class AuthInterceptor
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenRefreshInterceptor
 
+// OkHTTPImplementations
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ApolloOkHttpClient
@@ -36,6 +39,7 @@ annotation class ApolloOkHttpClient
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenRefreshOkHttpClient
 
+// Networking Module
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class NetworkingModule {
@@ -55,6 +59,12 @@ abstract class NetworkingModule {
   ): Interceptor
 
   internal companion object{
+    @Provides
+    @Singleton
+    fun provideLoginState(): LoginStateImpl {
+      return LoginStateImpl()
+    }
+
     @Provides
     @Singleton
     fun provideCookieJar(app: Application): ClearableCookieJar {

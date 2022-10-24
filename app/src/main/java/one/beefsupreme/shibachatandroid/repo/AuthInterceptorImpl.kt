@@ -4,7 +4,6 @@ import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import one.beefsupreme.shibachatandroid.AccessTokenStorage
 import javax.inject.Inject
 
 private const val TAG = "**AuthInterceptor**"
@@ -13,10 +12,12 @@ private const val TAG = "**AuthInterceptor**"
  * Attaches the access token from AccessTokenStorage
  * to header.access-token of every request.
  */
-class AuthInterceptorImpl @Inject constructor(): Interceptor {
+class AuthInterceptorImpl @Inject constructor(
+  val loginState: LoginStateImpl
+): Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()
-    val accessToken = AccessTokenStorage.getAccessTok()
+    val accessToken = loginState.accessToken
     val response = chain.proceed(newRequestWithAccessToken(accessToken, request))
 
     // Logs response cookies. Trying to look for refresh-token
