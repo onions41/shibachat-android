@@ -1,9 +1,11 @@
 type Mutation {
-  login(nickname: String!, password: String!): LoginResponse!
-}
+  login(nickname: String!, password: String!): String!
 
-type LoginResponse {
-  accessToken: String
+  register(nickname: String!, password: String!): String!
+
+  logout: Boolean!
+
+  sendFriendRequest(friendId: Int!): User!
 }
 
 type Query {
@@ -14,6 +16,10 @@ type Query {
   protected: Boolean!
 
   unprotected: Boolean!
+
+  user: User!
+
+  users: [User]!
 }
 
 type Person {
@@ -28,6 +34,10 @@ type User {
   nickname: String!
 
   password: String!
+
+  sentFriendRequests: [User]!
+
+  receivedFriendRequests: [User]!
 }
 
 schema {

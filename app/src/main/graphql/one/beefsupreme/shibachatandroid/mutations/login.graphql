@@ -1,5 +1,3 @@
 mutation Login($nickname: String!, $password: String!) {
-    login(nickname: $nickname, password: $password) {
-        accessToken
-    }
+    login(nickname: $nickname, password: $password)
 }
