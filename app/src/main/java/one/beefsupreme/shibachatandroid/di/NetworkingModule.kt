@@ -74,6 +74,8 @@ abstract class NetworkingModule {
       )
     }
 
+    // The OkHttpClient used by the TokenRefreshInterceptor
+    // Also used by @App for initial token refresh on app launch
     @TokenRefreshOkHttpClient
     @Provides
     @Singleton
@@ -85,6 +87,7 @@ abstract class NetworkingModule {
         .build()
     }
 
+    // The OkHttpClient used to build the ApolloClient
     @ApolloOkHttpClient
     @Provides
     @Singleton
