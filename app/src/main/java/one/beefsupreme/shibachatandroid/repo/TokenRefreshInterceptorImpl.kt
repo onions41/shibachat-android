@@ -31,7 +31,7 @@ private const val TAG = "**TokenRefreshInterceptor**"
 class TokenRefreshInterceptorImpl @Inject constructor(
   @TokenRefreshOkHttpClient val okHttpClient: OkHttpClient,
   private val appDispatchers: AppDispatchers,
-  val loginState: LoginStateImpl
+  private val loginState: LoginStateImpl
 ): Interceptor {
   // Mutex for blocking subsequent responses
   private val mutex = Mutex()
@@ -57,7 +57,6 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             // Empty string for the request body
             .post("".toRequestBody("text/x-markdown; charset=utf-8".toMediaType()))
             .build()
-
           val response: Response? = try {
             okHttpClient.newCall(request).execute()
           } catch (error: IOException) {
@@ -73,7 +72,7 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             } catch (error: NullPointerException) {
               ""
             }
-            if (newAccessToken == "") {
+            if (newAccessToken.isEmpty()) {
               loginState.logout()
             } else {
               loginState.login(newAccessToken)
