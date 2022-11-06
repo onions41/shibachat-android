@@ -1,12 +1,11 @@
 package one.beefsupreme.shibachatandroid.ui.authscreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.material.MaterialTheme
@@ -17,45 +16,39 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import one.beefsupreme.shibachatandroid.ui.destinations.HomeScreenDestination
 import one.beefsupreme.shibachatandroid.ui.imagecomposables.FlowerDogeLogo
 
-@Destination
 @Composable
 fun AuthScreen(
-  navigator: DestinationsNavigator,
   vm: AuthViewModel = hiltViewModel()
 ) {
-  // Let's get the things I need out of the vm here.
   val state = vm.state
 
   // Primary orange background
   Surface(
-    color = if (!vm.isLoggedIn) { Color.Blue } else { Color.Green },
+    color = MaterialTheme.colors.primary,
     modifier = Modifier.fillMaxSize()
   ) {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.SpaceBetween
+      verticalArrangement = Arrangement.SpaceAround
     ) {
-      Spacer(modifier = Modifier.size(30.dp).background(Color.Blue))
-
       // Should style this text at some point
-      Text("Login")
+      when (state.form) {
+        Form.LOGIN -> Text("Login")
+        Form.REGISTER -> Text("Register")
+      }
 
-      // Silly Doge with a cherry blossom on its face
+       // Silly Doge with a cherry blossom on its face
       FlowerDogeLogo()
 
+      // TODD: Need to clear the form
       // Login nickname input
       TextField(
-        value = state.loginNickname,
+        value = state.nicknameInput,
         onValueChange = {
-          vm.handle(AuthUiEvent.LoginNicknameChange(it))
+          vm.handle(AuthUiEvent.NicknameInputChange(it))
         },
         modifier = Modifier.fillMaxWidth(),
         placeholder = {
@@ -65,9 +58,9 @@ fun AuthScreen(
 
       // Login password input
       TextField(
-        value = state.loginPassword,
+        value = state.passwordInput,
         onValueChange = {
-          vm.handle(AuthUiEvent.LoginPasswordChange(it))
+          vm.handle(AuthUiEvent.PasswordInputChange(it))
         },
         modifier = Modifier.fillMaxWidth(),
         placeholder = {
@@ -75,7 +68,7 @@ fun AuthScreen(
         }
       )
 
-      // Login button
+      // Submit button
       Button(
         // Should be enabled only when there is some text in both fields
         enabled = true,
@@ -85,35 +78,17 @@ fun AuthScreen(
           MaterialTheme.colors.primary,
           MaterialTheme.colors.primaryVariant
         ),
-        onClick = { vm.handle(AuthUiEvent.LoginButtonPress) },
+        onClick = { vm.handle(AuthUiEvent.SubmitButtonPress) },
       ) {
-        Text("Login")
-      }
-
-      Button(
-        enabled = true,
-        onClick = { vm.handle(AuthUiEvent.ProtectedButtonPress) }
-      ) {
-        Text("Protected")
-      }
-
-      Button(
-        enabled = true,
-        onClick = { vm.handle(AuthUiEvent.UnprotectedButtonPress) }
-      ) {
-        Text("Unprotected")
-      }
-
-      // Get rid of this button later
-      Button(
-        onClick = { navigator.navigate(HomeScreenDestination) }
-      ) {
-        Text("Go to HomeScreen")
+        when (state.form) {
+          Form.LOGIN -> Text("Login!")
+          Form.REGISTER -> Text("Register!")
+        }
       }
 
       // Text link to register page
       TextButton(
-        onClick = {},
+        onClick = { vm.handle(AuthUiEvent.SwitchFormButtonPress) },
         colors = buttonColors(
           MaterialTheme.colors.surface,
           MaterialTheme.colors.primaryVariant,
@@ -121,8 +96,30 @@ fun AuthScreen(
           MaterialTheme.colors.primaryVariant
         ),
       ) {
-        Text("Register")
+        when (state.form) {
+          Form.LOGIN -> Text("Don't have an account? Register!")
+          Form.REGISTER -> Text("Already have an account? Login!")
+        }
+      }
+
+      // Crud display of errors
+      if (state.errors != null) {
+        Text(state.errors.toString())
       }
     }
+  }
+
+  // loading dialog
+  if (state.loading) {
+    Dialog(
+      onDismissRequest = {/* Empty to disable closing*/},
+      content = {
+        Text(text = "Loading")
+      },
+      properties = DialogProperties(
+        dismissOnBackPress = false,
+        dismissOnClickOutside = false
+      )
+    )
   }
 }
