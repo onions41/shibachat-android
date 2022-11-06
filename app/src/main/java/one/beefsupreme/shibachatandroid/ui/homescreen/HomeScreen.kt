@@ -11,14 +11,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import one.beefsupreme.shibachatandroid.ui.destinations.AuthScreenDestination
+
+private const val TAG = "**HomeScreen**"
 
 @Destination(start = true)
 @Composable
 fun HomeScreen(
-  navigator: DestinationsNavigator,
-  homeViewModel: HomeViewModel = hiltViewModel()
+  vm: HomeViewModel = hiltViewModel()
 ) {
   Surface(
     modifier = Modifier.fillMaxSize()
@@ -29,9 +28,9 @@ fun HomeScreen(
     ) {
       Text("This is the HomeScreen")
       Button(
-        onClick = { navigator.navigate(AuthScreenDestination) }
+        onClick = { vm.logout() }
       ) {
-        Text("Go to AuthScreen")
+        Text("Logout")
       }
     }
   }
