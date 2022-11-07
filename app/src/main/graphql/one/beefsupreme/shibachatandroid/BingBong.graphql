@@ -1,6 +1,0 @@
-query BingBong {
-    example1 {
-        height
-        name
-    }
-}
