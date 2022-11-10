@@ -28,7 +28,7 @@ type Person {
   height: Int!
 }
 
-type User {
+type User @typePolicy(keyFields: "id") {
   id: Int!
 
   nickname: String!
