@@ -1,0 +1,10 @@
+query Me {
+  user {
+    id
+    nickname
+    receivedFriendRequests {
+      id
+      nickname
+    }
+  }
+}

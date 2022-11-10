@@ -1,0 +1,6 @@
+mutation SendFriendRequest($friendId: Int!) {
+  sendFriendRequest(friendId: $friendId) {
+    id
+    nickname
+  }
+}
