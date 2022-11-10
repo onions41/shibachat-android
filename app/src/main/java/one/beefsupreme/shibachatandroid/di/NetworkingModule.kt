@@ -2,6 +2,8 @@ package one.beefsupreme.shibachatandroid.di
 
 import android.app.Application
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
+import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.network.okHttpClient
 import com.franmontiel.persistentcookiejar.ClearableCookieJar
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
@@ -16,7 +18,10 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import one.beefsupreme.shibachatandroid.BuildConfig
 import one.beefsupreme.shibachatandroid.repo.AuthInterceptorImpl
+import one.beefsupreme.shibachatandroid.repo.LoginState
 import one.beefsupreme.shibachatandroid.repo.LoginStateImpl
+import one.beefsupreme.shibachatandroid.repo.MeFetch
+import one.beefsupreme.shibachatandroid.repo.MeFetchImpl
 import one.beefsupreme.shibachatandroid.repo.TokenRefreshInterceptorImpl
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -58,13 +63,19 @@ abstract class NetworkingModule {
     tokenRefreshInterceptorImpl: TokenRefreshInterceptorImpl
   ): Interceptor
 
-  internal companion object{
-    @Provides
-    @Singleton
-    fun provideLoginState(): LoginStateImpl {
-      return LoginStateImpl()
-    }
+  @Binds
+  @Singleton
+  abstract fun bindLoginState(
+    loginState: LoginStateImpl
+  ): LoginState
 
+  @Binds
+  @Singleton
+  abstract fun bindMeFetch(
+    meFetch: MeFetchImpl
+  ): MeFetch
+
+  internal companion object {
     @Provides
     @Singleton
     fun provideCookieJar(app: Application): ClearableCookieJar {
@@ -75,7 +86,7 @@ abstract class NetworkingModule {
     }
 
     // The OkHttpClient used by the TokenRefreshInterceptor
-    // Also used by @App for initial token refresh on app launch
+    // Also used by AppViewModel for initial token refresh on app launch
     @TokenRefreshOkHttpClient
     @Provides
     @Singleton
@@ -110,6 +121,7 @@ abstract class NetworkingModule {
     ): ApolloClient {
       return ApolloClient.Builder()
         .serverUrl("${BuildConfig.SERVER_URL}/graphql")
+        .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
         .okHttpClient(okHttpClient)
         .build()
     }
