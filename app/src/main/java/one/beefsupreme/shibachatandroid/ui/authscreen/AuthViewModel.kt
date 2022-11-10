@@ -11,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import one.beefsupreme.shibachatandroid.LoginMutation
 import one.beefsupreme.shibachatandroid.RegisterMutation
-import one.beefsupreme.shibachatandroid.repo.LoginStateImpl
+import one.beefsupreme.shibachatandroid.repo.LoginState
 import javax.inject.Inject
 
 private const val TAG = "**AuthViewModel**"
@@ -19,7 +19,7 @@ private const val TAG = "**AuthViewModel**"
 @HiltViewModel
 class AuthViewModel @Inject constructor(
   private val apolloClient: ApolloClient,
-  private val loginState: LoginStateImpl
+  private val loginState: LoginState
 ): ViewModel() {
   var state by mutableStateOf(AuthUiState())
 

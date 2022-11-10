@@ -13,7 +13,7 @@ private const val TAG = "**AuthInterceptor**"
  * to header.access-token of every request.
  */
 class AuthInterceptorImpl @Inject constructor(
-  val loginState: LoginStateImpl
+  val loginState: LoginState
 ): Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val request = chain.request()

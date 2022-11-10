@@ -31,7 +31,7 @@ private const val TAG = "**TokenRefreshInterceptor**"
 class TokenRefreshInterceptorImpl @Inject constructor(
   @TokenRefreshOkHttpClient val okHttpClient: OkHttpClient,
   private val appDispatchers: AppDispatchers,
-  private val loginState: LoginStateImpl
+  private val loginState: LoginState
 ): Interceptor {
   // Mutex for blocking subsequent responses
   private val mutex = Mutex()

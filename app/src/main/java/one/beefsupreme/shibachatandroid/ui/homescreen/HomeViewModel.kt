@@ -7,7 +7,7 @@ import com.apollographql.apollo3.ApolloClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import one.beefsupreme.shibachatandroid.LogoutMutation
-import one.beefsupreme.shibachatandroid.repo.LoginStateImpl
+import one.beefsupreme.shibachatandroid.repo.LoginState
 import javax.inject.Inject
 
 private const val TAG = "**HomeViewModel**"
@@ -15,7 +15,7 @@ private const val TAG = "**HomeViewModel**"
 @HiltViewModel
 class HomeViewModel @Inject constructor(
   private val apolloClient: ApolloClient,
-  private val loginState: LoginStateImpl
+  private val loginState: LoginState
 ): ViewModel() {
   val isLoggedIn // This is a observed state
     get() = loginState.isLoggedIn
