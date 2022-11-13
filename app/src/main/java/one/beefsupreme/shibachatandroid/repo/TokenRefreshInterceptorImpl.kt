@@ -18,7 +18,7 @@ import one.beefsupreme.shibachatandroid.AppDispatchers
 import java.util.Date
 import javax.inject.Inject
 import one.beefsupreme.shibachatandroid.BuildConfig
-import one.beefsupreme.shibachatandroid.di.TokenRefreshOkHttpClient
+import one.beefsupreme.shibachatandroid.di.TokenRefreshOkHttp
 import java.io.IOException
 
 private const val TAG = "**TokenRefreshInterceptor**"
@@ -29,9 +29,10 @@ private const val TAG = "**TokenRefreshInterceptor**"
  * while the refresh token is taken care of automatically by cookiejar outside of this interceptor.
  */
 class TokenRefreshInterceptorImpl @Inject constructor(
-  @TokenRefreshOkHttpClient val okHttpClient: OkHttpClient,
   private val appDispatchers: AppDispatchers,
-  private val loginState: LoginState
+  private val loginState: LoginState,
+  private val meFetch: MeFetch,
+  @TokenRefreshOkHttp val okHttpClient: OkHttpClient
 ): Interceptor {
   // Mutex for blocking subsequent responses
   private val mutex = Mutex()
@@ -61,6 +62,7 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             okHttpClient.newCall(request).execute()
           } catch (error: IOException) {
             loginState.logout()
+            meFetch.stop()
             // I should log the Exception instead
             Log.v(TAG, "Your refresh token was invalid. You need to log in again")
             null
@@ -74,6 +76,7 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             }
             if (newAccessToken.isEmpty()) {
               loginState.logout()
+              meFetch.stop()
             } else {
               loginState.login(newAccessToken)
             }

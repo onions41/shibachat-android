@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import one.beefsupreme.shibachatandroid.LoginMutation
 import one.beefsupreme.shibachatandroid.RegisterMutation
 import one.beefsupreme.shibachatandroid.repo.LoginState
+import one.beefsupreme.shibachatandroid.repo.MeFetch
 import javax.inject.Inject
 
 private const val TAG = "**AuthViewModel**"
@@ -19,9 +20,11 @@ private const val TAG = "**AuthViewModel**"
 @HiltViewModel
 class AuthViewModel @Inject constructor(
   private val apolloClient: ApolloClient,
-  private val loginState: LoginState
+  private val loginState: LoginState,
+  private val meFetch: MeFetch,
 ): ViewModel() {
   var state by mutableStateOf(AuthUiState())
+    private set
 
   // Handles all AuthUiEvents
   fun handle(event: AuthUiEvent) {
@@ -66,12 +69,12 @@ class AuthViewModel @Inject constructor(
         // Login mutation always returns an access token in this case.
         val newAccessToken = data.login
         loginState.login(newAccessToken)
+        meFetch.start()
         state = state.copy(
           nicknameInput = "",
           passwordInput = "",
           loading = false,
         )
-
       } catch (e: ApolloException) {
         state = state.copy(errors = ApolloException(), loading = false)
       }
@@ -94,6 +97,7 @@ class AuthViewModel @Inject constructor(
         // Register mutation always returns an access token in this case.
         val newAccessToken = data.register
         loginState.login(newAccessToken)
+        meFetch.start()
         state = state.copy(
           nicknameInput = "",
           passwordInput = "",
