@@ -30,21 +30,18 @@ import javax.inject.Singleton
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AuthInterceptor
-
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class TokenRefreshInterceptor
 
-// OkHTTPImplementations
+// OkHTTP Implementations
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ApolloOkHttpClient
-
+annotation class ApolloOkHttp
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class TokenRefreshOkHttpClient
+annotation class TokenRefreshOkHttp
 
-// Networking Module
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class NetworkingModule {
@@ -76,6 +73,7 @@ abstract class NetworkingModule {
   ): MeFetch
 
   internal companion object {
+
     @Provides
     @Singleton
     fun provideCookieJar(app: Application): ClearableCookieJar {
@@ -87,7 +85,7 @@ abstract class NetworkingModule {
 
     // The OkHttpClient used by the TokenRefreshInterceptor
     // Also used by AppViewModel for initial token refresh on app launch
-    @TokenRefreshOkHttpClient
+    @TokenRefreshOkHttp
     @Provides
     @Singleton
     fun provideTokenRefreshOkHttpClient(
@@ -99,7 +97,7 @@ abstract class NetworkingModule {
     }
 
     // The OkHttpClient used to build the ApolloClient
-    @ApolloOkHttpClient
+    @ApolloOkHttp
     @Provides
     @Singleton
     fun provideApolloOkHttpClient(
@@ -117,7 +115,7 @@ abstract class NetworkingModule {
     @Provides
     @Singleton
     fun provideApolloClient(
-      @ApolloOkHttpClient okHttpClient: OkHttpClient
+      @ApolloOkHttp okHttpClient: OkHttpClient
     ): ApolloClient {
       return ApolloClient.Builder()
         .serverUrl("${BuildConfig.SERVER_URL}/graphql")
