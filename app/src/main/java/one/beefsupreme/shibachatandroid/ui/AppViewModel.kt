@@ -15,8 +15,9 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.BuildConfig
-import one.beefsupreme.shibachatandroid.di.TokenRefreshOkHttpClient
-import one.beefsupreme.shibachatandroid.repo.LoginStateImpl
+import one.beefsupreme.shibachatandroid.di.TokenRefreshOkHttp
+import one.beefsupreme.shibachatandroid.repo.LoginState
+import one.beefsupreme.shibachatandroid.repo.MeFetch
 import one.beefsupreme.shibachatandroid.repo.TokenRefreshInterceptorImpl
 import java.io.IOException
 import javax.inject.Inject
@@ -25,18 +26,20 @@ private const val TAG = "**AppViewModel**"
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
-  private val loginState: LoginStateImpl,
   private val appDispatchers: AppDispatchers,
-  @TokenRefreshOkHttpClient private val okHttp: OkHttpClient
+  private val loginState: LoginState,
+  val meFetch: MeFetch,
+  @TokenRefreshOkHttp private val okHttp: OkHttpClient
 ): ViewModel() {
   val isLoggedIn // This is a observed state
     get() = loginState.isLoggedIn
 
-  var doneInitialTokenFetch
-    get() = loginState.doneInitialTokenFetch
-    set(value) { loginState.doneInitialTokenFetch = value }
+  var finishedInitializingApp // Not an observed state
+    get() = loginState.finishedInitializingApp
+    set(value) { loginState.finishedInitializingApp = value }
 
   var loading by mutableStateOf(false)
+    private set
 
   // Moshi for parsing JSON response
   @JsonClass(generateAdapter = true)
@@ -46,7 +49,7 @@ class AppViewModel @Inject constructor(
 
   // Fetches access token and refresh token from /refresh-token
   // and updates the login state accordingly
-  fun fetchTokens() {
+  fun fetchTokens(): Boolean {
     loading = true // So @App can render a loading indicator
 
     // Builds the request. POST to /refresh-token
@@ -67,6 +70,7 @@ class AppViewModel @Inject constructor(
       }
     }
 
+    var tokensWereFetched = false
     if (response != null) {
       // Try to grab the accessToken out of the body. If fail, return ""
       // Even if it successfully grabs the accessToken, it could be "" if
@@ -83,12 +87,17 @@ class AppViewModel @Inject constructor(
       } else {
         loginState.login(newAccessToken)
         Log.v(TAG, "Logged in with $newAccessToken}")
+        tokensWereFetched = true
       }
-    } // End runBlocking
+    }
 
     // Is now logged in or logged out depending on fetch outcome
     loading = false
+
+    return tokensWereFetched
   }
+
+
 }
 
 
