@@ -23,7 +23,7 @@ sealed class MeQueryState {
 }
 
 interface MeFetch {
-  var state: MeQueryState
+  val state: MeQueryState
   fun start()
   fun stop()
 }
@@ -33,9 +33,15 @@ class MeFetchImpl @Inject constructor(
   // Has to be lazy to solve the circular dependency.
   private val apolloClient: Lazy<ApolloClient>
 ): MeFetch {
+  private var _state: MeQueryState by mutableStateOf(MeQueryState.Loading)
+  override val state
+    get() = _state
+
   private val scope = CoroutineScope(appDispatchers.default)
   private lateinit var job: Job
-  override var state: MeQueryState by mutableStateOf(MeQueryState.Loading)
+
+
+
 
   override fun start() {
     job = scope.launch {
@@ -59,13 +65,13 @@ class MeFetchImpl @Inject constructor(
         .collect {
           // Either MeQueryState.Error or MeQueryState,Success(me: User)
           ensureActive()
-          state = it
+          _state = it
         }
     }
   }
 
   override fun stop() {
     job.cancel()
-    state = MeQueryState.Loading
+    _state = MeQueryState.Loading
   }
 }
