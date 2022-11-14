@@ -19,7 +19,7 @@ type Query {
 
   user: User!
 
-  users: [User]!
+  users: [User!]!
 }
 
 type Person {
@@ -28,16 +28,16 @@ type Person {
   height: Int!
 }
 
-type User @typePolicy(keyFields: "id") {
+type User {
   id: Int!
 
   nickname: String!
 
   password: String!
 
-  sentFriendRequests: [User]!
+  sentFriendRequests: [User!]!
 
-  receivedFriendRequests: [User]!
+  receivedFriendRequests: [User!]!
 }
 
 schema {

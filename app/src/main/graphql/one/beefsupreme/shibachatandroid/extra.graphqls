@@ -1,0 +1,5 @@
+# I don't think this needs to be declared here.
+# I am putting it in comments in case it is needed later.
+# directive @typePolicy(keyFields: String!) on OBJECT | INTERFACE | UNION
+
+extend type User @typePolicy(keyFields: "id")
