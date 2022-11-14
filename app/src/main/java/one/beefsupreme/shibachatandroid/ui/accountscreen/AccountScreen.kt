@@ -35,7 +35,7 @@ fun AccountScreen(
         LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
           items(
             items = state.allUsers,
-            key = { user -> user!!.id }
+            key = { user -> user.id }
           ) { user ->
             Surface(
               modifier = Modifier.fillMaxWidth()
@@ -44,7 +44,7 @@ fun AccountScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
               ) {
-                Text(user!!.nickname)
+                Text(user.nickname)
                 Button(
                   onClick = { vm.handle(AccountUiEvent.SendFriendReqBtnClk(user.id)) }
                 ) {
