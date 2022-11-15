@@ -2,7 +2,7 @@ query Me {
   user {
     id
     nickname
-    receivedFriendRequests {
+    receivedFRequests {
       id
       nickname
     }

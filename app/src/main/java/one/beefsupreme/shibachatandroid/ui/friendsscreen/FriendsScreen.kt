@@ -33,8 +33,8 @@ fun FriendsScreen(
 
       if (meState is MeQueryState.Success) {
         LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
-          items(items = meState.me.receivedFriendRequests) { user ->
-            Text("user nickname: ${user?.nickname} ")
+          items(items = meState.me.receivedFRequests) { user ->
+            Text("user nickname: ${user.nickname} ")
           }
         }
       }
