@@ -1,5 +1,6 @@
 package one.beefsupreme.shibachatandroid.ui.accountscreen
 
+import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +25,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 fun AccountScreen(
   vm: AccountViewModel = hiltViewModel()
 ) {
-  val state = vm.state
+  val state by vm.state.collectAsState()
 
   Surface(
     modifier = Modifier.fillMaxSize()
@@ -31,10 +33,10 @@ fun AccountScreen(
     Column {
       Text("All Users")
 
-      if (state is AccountUiState.Success){
+      if (state is AccountUiState.Success) {
         LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {
           items(
-            items = state.allUsers,
+            items = (state as AccountUiState.Success).allUsers,
             key = { user -> user.id }
           ) { user ->
             Surface(
@@ -46,7 +48,7 @@ fun AccountScreen(
               ) {
                 Text(user.nickname)
                 Button(
-                  onClick = { vm.handle(AccountUiEvent.SendFriendReqBtnClk(user.id)) }
+                  onClick = { vm.handle(AccountUiEvent.SendFRequestBtnClk(user.id)) }
                 ) {
                   Text("Send friend req")
                 }
