@@ -1,17 +1,16 @@
 package one.beefsupreme.shibachatandroid.ui.accountscreen
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.exception.ApolloException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import one.beefsupreme.shibachatandroid.AllUsersQuery
 import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.LogoutMutation
+import one.beefsupreme.shibachatandroid.SendFRequestMutation
 import one.beefsupreme.shibachatandroid.repo.LoginState
 import one.beefsupreme.shibachatandroid.repo.MeFetch
 import javax.inject.Inject
@@ -23,7 +22,8 @@ class AccountViewModel @Inject constructor(
   private val loginState: LoginState,
   private val meFetch: MeFetch
 ): ViewModel() {
-  var state: AccountUiState by mutableStateOf(AccountUiState.Loading)
+  var state: MutableStateFlow<AccountUiState> = MutableStateFlow(AccountUiState.Loading)
+    private set
 
   init {
     viewModelScope.launch(appDispatchers.io) {
@@ -31,7 +31,7 @@ class AccountViewModel @Inject constructor(
       // in order for ApolloClient to throw both network errors and errors thrown in
       // the backend resolvers. Otherwise, ApolloClient will return an errors object that
       // contains the resolver errors separately. I don't want them separately at the moment.
-      try { // Don't lift assignment, makes more sense like this in this case.
+      state.value = try {
         val data = apolloClient
           .query(AllUsersQuery())
           .execute()
@@ -39,10 +39,9 @@ class AccountViewModel @Inject constructor(
 
         // Fetch was successful.
         // Login mutation always returns an access token in this case.
-        state = AccountUiState.Success(data.users)
-
+        AccountUiState.Success(data.users)
       } catch (e: ApolloException) {
-        state = AccountUiState.Error(e)
+        AccountUiState.Error(e)
       }
     }
   }
@@ -50,7 +49,7 @@ class AccountViewModel @Inject constructor(
   fun handle(event: AccountUiEvent) {
     when (event) {
       is AccountUiEvent.LogoutBtnClk -> logout()
-      is AccountUiEvent.SendFriendReqBtnClk -> {/* TODO */}
+      is AccountUiEvent.SendFRequestBtnClk -> sendFRequest(event.friendId)
     }
   }
 
@@ -67,5 +66,17 @@ class AccountViewModel @Inject constructor(
     }
     loginState.logout()
     meFetch.stop()
+  }
+
+  private fun sendFRequest(friendId: Int) {
+    viewModelScope.launch(appDispatchers.default) {
+      try {
+        apolloClient
+          .mutation(SendFRequestMutation(friendId))
+          .execute()
+          .dataAssertNoErrors
+      } catch (e: ApolloException) {}
+      // TODO
+    }
   }
 }
