@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 
 private const val TAG = "**HomeScreen**"
 
-@Destination(start = true)
+@RootNavGraph(start = true)
+@Destination
 @Composable
 fun HomeScreen(
 ) {
