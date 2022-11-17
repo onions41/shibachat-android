@@ -73,7 +73,7 @@ fun UserCard(user: AllUsersQuery.User) {
 fun UserCardPreview() {
   ShibachatAndroidTheme {
     Surface {
-      UserCard(AllUsersQuery.User(id = 1, nickname = "John Cena", __typename = "User"))
+      UserCard(AllUsersQuery.User(id = 1, nickname = "John Cena", __typename = "User", receivedFReqFromMe = false))
     }
   }
 }

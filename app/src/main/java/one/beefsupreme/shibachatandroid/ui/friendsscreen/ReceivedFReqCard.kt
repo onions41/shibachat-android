@@ -27,10 +27,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import one.beefsupreme.shibachatandroid.MeQuery
 import one.beefsupreme.shibachatandroid.R
+import one.beefsupreme.shibachatandroid.type.FRequestStatus
 import one.beefsupreme.shibachatandroid.ui.theme.ShibachatAndroidTheme
 
 @Composable
-fun ReceivedFReqCard(user: MeQuery.ReceivedFRequest) {
+fun ReceivedFReqCard(fRequest: MeQuery.ReceivedFRequest) {
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
@@ -50,7 +51,7 @@ fun ReceivedFReqCard(user: MeQuery.ReceivedFRequest) {
     )
 
     Text(
-      text = "${user.nickname} wants to be your friend. Do you accept?",
+      text = "${fRequest.requester.nickname} wants to be your friend. Do you accept?",
       style = MaterialTheme.typography.caption,
       modifier = Modifier.width(140.dp)
     )
@@ -88,9 +89,12 @@ fun ReceivedFReqCardPreview() {
     Surface {
       ReceivedFReqCard(
         MeQuery.ReceivedFRequest(
-          id = 3,
-          nickname = "Dwayne Johnson",
-          __typename = "User"
+          requester = MeQuery.Requester(
+            id = 3,
+            nickname = "Dwayne Johnson",
+            __typename = "User"
+          ),
+          status = FRequestStatus.SENT,
         )
       )
     }

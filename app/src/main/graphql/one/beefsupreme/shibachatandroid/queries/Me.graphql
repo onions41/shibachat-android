@@ -3,8 +3,11 @@ query Me {
     id
     nickname
     receivedFRequests {
-      id
-      nickname
+      requester {
+        id
+        nickname
+      }
+      status
     }
   }
 }

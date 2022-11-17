@@ -35,9 +35,25 @@ type User {
 
   password: String!
 
-  sentFRequests: [User!]!
+  receivedFRequests: [FRequest!]!
 
-  receivedFRequests: [User!]!
+  receivedFReqFromMe: Boolean!
+}
+
+type FRequest {
+  requesteeId: Int!
+
+  status: FRequestStatus!
+
+  requester: User!
+}
+
+enum FRequestStatus {
+  SENT
+
+  ACCEPTED
+
+  REJECTED
 }
 
 schema {
