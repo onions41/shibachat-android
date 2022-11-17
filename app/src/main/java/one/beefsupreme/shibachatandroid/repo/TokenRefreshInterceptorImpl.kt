@@ -31,7 +31,7 @@ private const val TAG = "**TokenRefreshInterceptor**"
 class TokenRefreshInterceptorImpl @Inject constructor(
   private val appDispatchers: AppDispatchers,
   private val loginState: LoginState,
-  private val meFetch: MeFetch,
+  private val me: Me,
   @TokenRefreshOkHttp val okHttpClient: OkHttpClient
 ): Interceptor {
   // Mutex for blocking subsequent responses
@@ -62,7 +62,7 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             okHttpClient.newCall(request).execute()
           } catch (error: IOException) {
             loginState.logout()
-            meFetch.stop()
+            me.stop()
             // I should log the Exception instead
             Log.v(TAG, "Your refresh token was invalid. You need to log in again")
             null
@@ -76,7 +76,7 @@ class TokenRefreshInterceptorImpl @Inject constructor(
             }
             if (newAccessToken.isEmpty()) {
               loginState.logout()
-              meFetch.stop()
+              me.stop()
             } else {
               loginState.login(newAccessToken)
             }

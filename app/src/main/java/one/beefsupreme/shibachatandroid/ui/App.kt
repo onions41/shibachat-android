@@ -73,7 +73,7 @@ fun App(
   // process kill or finish(), then login or logout depending on fetch outcome.
   if (!vm.finishedInitializingApp) {
     val wasSuccessful = vm.fetchTokens() // Runs blocking and vm.loading is true while blocking
-    if (wasSuccessful) { vm.meFetch.start() }
+    if (wasSuccessful) { vm.me.start() }
     vm.finishedInitializingApp = true // So it doesn't run after UI re-config
   }
 

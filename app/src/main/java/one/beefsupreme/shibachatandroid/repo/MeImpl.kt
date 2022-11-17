@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.watch
+import com.apollographql.apollo3.exception.ApolloException
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -16,62 +17,56 @@ import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.MeQuery
 import javax.inject.Inject
 
-sealed class MeQueryState {
-  object Loading: MeQueryState()
-  object Error: MeQueryState()
-  class Success(val me: MeQuery.User): MeQueryState()
+sealed class MeResult {
+  object Loading: MeResult()
+  class Failed(val error: ApolloException): MeResult()
+  class Success(val data: MeQuery.Data): MeResult()
 }
 
-interface MeFetch {
-  val state: MeQueryState
+interface Me {
+  val result: MeResult
   fun start()
   fun stop()
 }
 
-class MeFetchImpl @Inject constructor(
+class MeImpl @Inject constructor(
   appDispatchers: AppDispatchers,
   // Has to be lazy to solve the circular dependency.
   private val apolloClient: Lazy<ApolloClient>
-): MeFetch {
-  private var _state: MeQueryState by mutableStateOf(MeQueryState.Loading)
-  override val state
-    get() = _state
+): Me {
+  private var _result: MeResult by mutableStateOf(MeResult.Loading)
+  override val result
+    get() = _result
 
-  private val scope = CoroutineScope(appDispatchers.default)
+  private val scope = CoroutineScope(appDispatchers.io)
   private lateinit var job: Job
-
-
-
 
   override fun start() {
     job = scope.launch {
       apolloClient.get().query(MeQuery()).watch()
         .map {
-          val me = it
-            .data
-            ?.user
-          if (me == null) {
+          val data = it.data
+          if (data?.user == null) {
             // There were some error
             // TODO: do something with response.errors
-            MeQueryState.Error
+            MeResult.Failed(ApolloException("me fetched was null!"))
           } else {
-            MeQueryState.Success(me)
+            MeResult.Success(data)
           }
         }
-        .catch { e ->
+        .catch { e -> // I don't think this e is always an ApolloException.
           ensureActive()
-          emit(MeQueryState.Error)
+          emit(MeResult.Failed(e as ApolloException))
         }
         .collect {
-          // Either MeQueryState.Error or MeQueryState,Success(me: User)
           ensureActive()
-          _state = it
+          _result = it
         }
     }
   }
 
   override fun stop() {
     job.cancel()
-    _state = MeQueryState.Loading
+    _result = MeResult.Loading
   }
 }

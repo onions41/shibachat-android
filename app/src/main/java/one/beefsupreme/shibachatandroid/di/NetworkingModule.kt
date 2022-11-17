@@ -20,8 +20,8 @@ import one.beefsupreme.shibachatandroid.BuildConfig
 import one.beefsupreme.shibachatandroid.repo.AuthInterceptorImpl
 import one.beefsupreme.shibachatandroid.repo.LoginState
 import one.beefsupreme.shibachatandroid.repo.LoginStateImpl
-import one.beefsupreme.shibachatandroid.repo.MeFetch
-import one.beefsupreme.shibachatandroid.repo.MeFetchImpl
+import one.beefsupreme.shibachatandroid.repo.Me
+import one.beefsupreme.shibachatandroid.repo.MeImpl
 import one.beefsupreme.shibachatandroid.repo.TokenRefreshInterceptorImpl
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -68,9 +68,9 @@ abstract class NetworkingModule {
 
   @Binds
   @Singleton
-  abstract fun bindMeFetch(
-    meFetch: MeFetchImpl
-  ): MeFetch
+  abstract fun bindMe(
+    me: MeImpl
+  ): Me
 
   internal companion object {
 

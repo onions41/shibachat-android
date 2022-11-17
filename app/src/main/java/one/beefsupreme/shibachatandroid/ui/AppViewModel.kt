@@ -17,7 +17,7 @@ import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.BuildConfig
 import one.beefsupreme.shibachatandroid.di.TokenRefreshOkHttp
 import one.beefsupreme.shibachatandroid.repo.LoginState
-import one.beefsupreme.shibachatandroid.repo.MeFetch
+import one.beefsupreme.shibachatandroid.repo.Me
 import one.beefsupreme.shibachatandroid.repo.TokenRefreshInterceptorImpl
 import java.io.IOException
 import javax.inject.Inject
@@ -28,7 +28,7 @@ private const val TAG = "**AppViewModel**"
 class AppViewModel @Inject constructor(
   private val appDispatchers: AppDispatchers,
   private val loginState: LoginState,
-  val meFetch: MeFetch,
+  val me: Me,
   @TokenRefreshOkHttp private val okHttp: OkHttpClient
 ): ViewModel() {
   val isLoggedIn // This is a observed state

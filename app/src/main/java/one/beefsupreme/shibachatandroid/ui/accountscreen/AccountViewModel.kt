@@ -12,7 +12,7 @@ import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.LogoutMutation
 import one.beefsupreme.shibachatandroid.SendFRequestMutation
 import one.beefsupreme.shibachatandroid.repo.LoginState
-import one.beefsupreme.shibachatandroid.repo.MeFetch
+import one.beefsupreme.shibachatandroid.repo.Me
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +20,7 @@ class AccountViewModel @Inject constructor(
   private val apolloClient: ApolloClient,
   private val appDispatchers: AppDispatchers,
   private val loginState: LoginState,
-  private val meFetch: MeFetch
+  private val me: Me
 ): ViewModel() {
   var state: MutableStateFlow<AccountUiState> = MutableStateFlow(AccountUiState.Loading)
     private set
@@ -65,7 +65,7 @@ class AccountViewModel @Inject constructor(
       apolloClient.mutation(LogoutMutation()).execute()
     }
     loginState.logout()
-    meFetch.stop()
+    me.stop()
   }
 
   private fun sendFRequest(friendId: Int) {
