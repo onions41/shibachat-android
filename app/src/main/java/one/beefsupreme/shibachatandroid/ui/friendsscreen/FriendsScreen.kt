@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import one.beefsupreme.shibachatandroid.repo.MeQueryState
 import one.beefsupreme.shibachatandroid.ui.FriendsNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import one.beefsupreme.shibachatandroid.repo.MeResult
 import one.beefsupreme.shibachatandroid.ui.destinations.FRequestsScreenDestination
 
 private const val TAG = "**FriendsScreen**"
@@ -26,8 +26,7 @@ fun FriendsScreen(
   vm: FriendsViewModel = hiltViewModel(),
   navigator: DestinationsNavigator
 ) {
-  val meState = vm.meFetch.state
-  Log.v(TAG, meState.toString())
+  val meResult = vm.me.result
 
   Surface(
     modifier = Modifier.fillMaxSize()
@@ -39,9 +38,9 @@ fun FriendsScreen(
         MakeNewFriendsCard { navigator.navigate(FRequestsScreenDestination) }
       }
 
-      if (meState is MeQueryState.Success) {
-        items(items = meState.me.receivedFRequests) { user ->
-          ReceivedFReqCard(user)
+      if (meResult is MeResult.Success) {
+        items(items = meResult.data.user.receivedFRequests) { fRequest ->
+          ReceivedFReqCard(fRequest)
         }
       } else {
         item(key = "loading-indicator") {

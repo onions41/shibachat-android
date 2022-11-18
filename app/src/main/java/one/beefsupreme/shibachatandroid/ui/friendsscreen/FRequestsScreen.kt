@@ -21,8 +21,7 @@ import one.beefsupreme.shibachatandroid.ui.FriendsNavGraph
 fun FRequestsScreen(
   vm: FriendsViewModel = hiltViewModel()
 ) {
-  val meState = vm.meFetch.state
-  val state by vm.state.collectAsState()
+  val allUsersResult by vm.allUsersResult.collectAsState() // AllUsersResult
 
   Surface(
     modifier = Modifier.fillMaxSize()
@@ -31,9 +30,9 @@ fun FRequestsScreen(
       modifier = Modifier.padding(vertical = 4.dp)
     ) {
 
-      if (state is FReqUiState.Success) {
+      if (allUsersResult is AllUsersResult.Success) {
         items(
-          items = (state as FReqUiState.Success).allUsers,
+          items = (allUsersResult as AllUsersResult.Success).data.users,
           key = { user -> user.id }
         ) { user ->
           if (true) { UserCard(user) }
