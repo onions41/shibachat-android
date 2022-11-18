@@ -35,17 +35,17 @@ type User {
 
   password: String!
 
-  receivedFRequests: [FRequest!]!
+  receivedFRequests: [FriendRequest!]!
 
   receivedFReqFromMe: Boolean!
 }
 
-type FRequest {
+type FriendRequest {
+  requester: User!
+
   requesteeId: Int!
 
   status: FRequestStatus!
-
-  requester: User!
 }
 
 enum FRequestStatus {
