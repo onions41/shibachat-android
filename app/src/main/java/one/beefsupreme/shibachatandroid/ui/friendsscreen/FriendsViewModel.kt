@@ -1,28 +1,13 @@
 package one.beefsupreme.shibachatandroid.ui.friendsscreen
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.ApolloClient
-import com.apollographql.apollo3.exception.ApolloException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import one.beefsupreme.shibachatandroid.AllUsersQuery
 import one.beefsupreme.shibachatandroid.AppDispatchers
-import one.beefsupreme.shibachatandroid.SendFRequestMutation
 import one.beefsupreme.shibachatandroid.repo.Me
 import javax.inject.Inject
 
-sealed class FReqUiEvent {
-  object RefreshBtnClick: FReqUiEvent()
-  class SendFReqBtnClick(val friendId: Int): FReqUiEvent()
-}
-
-sealed class AllUsersResult {
-  object Loading : AllUsersResult()
-  class Failed(val error: ApolloException) : AllUsersResult()
-  class Success(val data: AllUsersQuery.Data) : AllUsersResult()
-}
+sealed class FriendsUiEvent {}
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
@@ -30,48 +15,10 @@ class FriendsViewModel @Inject constructor(
   private val appDispatchers: AppDispatchers,
   val me: Me
 ): ViewModel() {
-  var allUsersResult: MutableStateFlow<AllUsersResult> = MutableStateFlow(AllUsersResult.Loading)
-    private set
-
-  init { refresh() }
-
-  fun handle(event: FReqUiEvent) {
-    when (event) {
-      is FReqUiEvent.RefreshBtnClick -> refresh()
-      is FReqUiEvent.SendFReqBtnClick -> sendFRequest(event.friendId)
-    }
-  }
-
-  private fun sendFRequest(friendId: Int) {
-    viewModelScope.launch(appDispatchers.io) {
-      try {
-        apolloClient
-          .mutation(SendFRequestMutation(friendId))
-          .execute()
-          .dataAssertNoErrors
-      } catch (e: ApolloException) {}
-      // TODO
-    }
-  }
-
-  private fun refresh() {
-    viewModelScope.launch(appDispatchers.io) {
-      // ApolloClient throws only network errors by default. Must specify dataAssertNoErrors
-      // in order for ApolloClient to throw both network errors and errors thrown in
-      // the backend resolvers. Otherwise, ApolloClient will return an errors object that
-      // contains the resolver errors separately. I don't want them separately at the moment.
-      allUsersResult.value = try {
-        val data = apolloClient
-          .query(AllUsersQuery())
-          .execute()
-          .dataAssertNoErrors // Because I want apolloClient to throw all errors
-
-        // Fetch was successful.
-        // Login mutation always returns an access token in this case.
-        AllUsersResult.Success(data = data)
-      } catch (error: ApolloException) {
-        AllUsersResult.Failed(error = error)
-      }
-    }
+  fun handle(event: FriendsUiEvent) {
+//    when (event) {
+//      is FriendsUiEvent.RefreshBtnClick -> refresh()
+//      is FriendsUiEvent.SendFReqBtnClick -> sendFRequest(event.friendId)
+//    }
   }
 }
