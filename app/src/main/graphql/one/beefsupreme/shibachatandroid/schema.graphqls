@@ -5,7 +5,7 @@ type Mutation {
 
   logout: Boolean!
 
-  sendFRequest(friendId: Int!): User!
+  sendFRequest(friendId: Int!): FriendRequest!
 }
 
 type Query {
@@ -35,6 +35,8 @@ type User {
 
   password: String!
 
+  sentFRequests: [FriendRequest!]!
+
   receivedFRequests: [FriendRequest!]!
 
   receivedFReqFromMe: Boolean!
@@ -42,6 +44,10 @@ type User {
 
 type FriendRequest {
   requester: User!
+
+  requesterId: Int!
+
+  requestee: User!
 
   requesteeId: Int!
 

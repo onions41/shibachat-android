@@ -3,3 +3,4 @@
 # directive @typePolicy(keyFields: String!) on OBJECT | INTERFACE | UNION
 
 extend type User @typePolicy(keyFields: "id")
+extend type FriendRequest @typePolicy(keyFields: "requesterId requesteeId")
