@@ -113,6 +113,7 @@ apollo {
         file("src/main/graphql/one/beefsupreme/shibachatandroid/schema.graphqls"),
         file("src/main/graphql/one/beefsupreme/shibachatandroid/extra.graphqls")
     ))
+    generateFragmentImplementations.set(true)
 }
 
 kapt {
