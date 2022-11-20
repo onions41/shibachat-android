@@ -1,4 +1,5 @@
 fragment SentFRequestFragment on FriendRequest {
+  requesterId
   requesteeId
   requestee {
     nickname
