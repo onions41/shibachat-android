@@ -21,16 +21,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import one.beefsupreme.shibachatandroid.AllUsersQuery
+import one.beefsupreme.shibachatandroid.MeQuery
 import one.beefsupreme.shibachatandroid.R
 
 @Composable
-fun UserCard(
-  vm: FRequestsViewModel,
-  user: AllUsersQuery.User
+fun SentFReqCard(
+//  vm: FRequestsViewModel, // I'll need this later when adding buttons
+  sentFRequest: MeQuery.SentFRequest
 ) {
-  val sendFRequestResult = vm.sendFRequestResult
-
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
@@ -51,18 +49,18 @@ fun UserCard(
     )
 
     Text(
-      text = user.nickname,
+      text = sentFRequest.sentFRequestFragment.requestee.nickname,
       style = MaterialTheme.typography.body2,
       modifier = Modifier.width(140.dp).padding(horizontal = 12.dp)
     )
 
     Button(
-      onClick = { vm.handle(FRequestsUiEvent.SendFReqBtnClick(user.id)) },
-      enabled = sendFRequestResult is SendFRequestResult.Ready,
+      onClick = {},
+      enabled = true,
       shape = CircleShape
     ) {
       Text(
-        text = "Send friend request",
+        text = "ABC",
         modifier = Modifier.width(100.dp),
         style = MaterialTheme.typography.button,
         textAlign = TextAlign.Center
@@ -70,13 +68,3 @@ fun UserCard(
     }
   }
 }
-
-//@Preview(widthDp = 360)
-//@Composable
-//fun UserCardPreview() {
-//  ShibachatAndroidTheme {
-//    Surface {
-//      UserCard(AllUsersQuery.User(id = 1, nickname = "John Cena", __typename = "User", receivedFReqFromMe = false))
-//    }
-//  }
-//}
