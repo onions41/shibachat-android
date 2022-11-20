@@ -82,21 +82,21 @@ fun ReceivedFReqCard(fRequest: MeQuery.ReceivedFRequest) {
   }
 }
 
-@Preview(widthDp = 360)
-@Composable
-fun ReceivedFReqCardPreview() {
-  ShibachatAndroidTheme {
-    Surface {
-      ReceivedFReqCard(
-        MeQuery.ReceivedFRequest(
-          requester = MeQuery.Requester(
-            id = 3,
-            nickname = "Dwayne Johnson",
-            __typename = "User"
-          ),
-          status = FRequestStatus.SENT,
-        )
-      )
-    }
-  }
-}
+//@Preview(widthDp = 360)
+//@Composable
+//fun ReceivedFReqCardPreview() {
+//  ShibachatAndroidTheme {
+//    Surface {
+//      ReceivedFReqCard(
+//        MeQuery.ReceivedFRequest(
+//          requester = MeQuery.Requester(
+//            id = 3,
+//            nickname = "Dwayne Johnson",
+//            __typename = "User"
+//          ),
+//          status = FRequestStatus.SENT,
+//        )
+//      )
+//    }
+//  }
+//}
