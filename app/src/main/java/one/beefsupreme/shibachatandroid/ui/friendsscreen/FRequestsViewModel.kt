@@ -1,13 +1,17 @@
 package one.beefsupreme.shibachatandroid.ui.friendsscreen
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.exception.ApolloException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +20,10 @@ import one.beefsupreme.shibachatandroid.AllUsersQuery
 import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.SendFRequestMutation
 import one.beefsupreme.shibachatandroid.repo.Me
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
+private const val TAG = "**FRequestsViewModel**"
 
 sealed class FRequestsUiEvent {
 //  object RefreshBtnClick: FriendsUiEvent()
@@ -43,14 +50,16 @@ class FRequestsViewModel @Inject constructor(
   val me: Me
 ): ViewModel() {
   // Has to be MutableStateFlow because its value is changed in the init block
-  private val _allUsersResult: MutableStateFlow<AllUsersResult> = MutableStateFlow(AllUsersResult.Loading)
+  private val _allUsersResult: MutableStateFlow<AllUsersResult>
+    = MutableStateFlow(AllUsersResult.Loading)
   val allUsersResult: StateFlow<AllUsersResult> = _allUsersResult.asStateFlow()
 
   // Prefer Mutable state otherwise
-  var sendFRequestResult: SendFRequestResult by mutableStateOf(SendFRequestResult.Ready)
-    private set
+  var sendFRequestResult: SendFRequestResult
+    by mutableStateOf(SendFRequestResult.Ready)
+      private set
 
-  init { refresh() }
+  init { allUsers() }
 
   fun handle(event: FRequestsUiEvent) {
     when (event) {
@@ -58,7 +67,7 @@ class FRequestsViewModel @Inject constructor(
     }
   }
 
-  private fun refresh() {
+  private fun allUsers() {
     viewModelScope.launch(appDispatchers.io) {
       // ApolloClient throws only network errors by default. Must specify dataAssertNoErrors
       // in order for ApolloClient to throw both network errors and errors thrown in
@@ -67,6 +76,7 @@ class FRequestsViewModel @Inject constructor(
       _allUsersResult.value = try {
         val data = apolloClient
           .query(AllUsersQuery())
+          .fetchPolicy(FetchPolicy.NetworkOnly)
           .execute()
           .dataAssertNoErrors // Because I want apolloClient to throw all errors
 
@@ -77,9 +87,12 @@ class FRequestsViewModel @Inject constructor(
         AllUsersResult.Failed(error)
       }
     }
+
+    Log.v(TAG, "AllUsersQuery just ran")
   }
 
   private fun sendFRequest(friendId: Int) {
+    // Needs to use mutex to protect against multiple button clicks after protecting it UI wise first
     viewModelScope.launch(appDispatchers.io) {
       sendFRequestResult = SendFRequestResult.Loading
 
@@ -93,6 +106,11 @@ class FRequestsViewModel @Inject constructor(
       } catch (error: ApolloException) {
         SendFRequestResult.Failed(error)
       }
+
+      // SendFRequestResult needs to be flipped back to Ready before the buttons will work again.
+      // delays for 3/4 of a second, then flips it back to Ready. This delay is really needed.
+      delay(TimeUnit.MILLISECONDS.toMillis(750))
+      sendFRequestResult = SendFRequestResult.Ready
     }
   }
 }
