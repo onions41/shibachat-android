@@ -56,7 +56,7 @@ class MeImpl @Inject constructor(
         }
         .catch { e -> // I don't think this e is always an ApolloException.
           ensureActive()
-          emit(MeResult.Failed(e as ApolloException))
+          emit(MeResult.Failed(e as ApolloException)) // emit is used for collecting from the catch block
         }
         .collect {
           ensureActive()

@@ -39,12 +39,19 @@ fun FriendsScreen(
       }
 
       if (meResult is MeResult.Success) {
-        items(items = meResult.data.user.receivedFRequests) { fRequest ->
-          ReceivedFReqCard(fRequest)
+        items(
+          items = meResult.data.user.receivedFRequests,
+          key = { receivedFRequest -> "receivedFRequest-${receivedFRequest.requesterId}" }
+        ) { receivedFRequest ->
+          ReceivedFReqCard(receivedFRequest)
         }
       } else {
         item(key = "loading-indicator") {
           Text("Me is still loading or it failed")
+        }
+
+        if (meResult is MeResult.Failed) {
+          Log.e(TAG, "MeResult.Failed.error: ${meResult.error.toString()}")
         }
       }
     }
