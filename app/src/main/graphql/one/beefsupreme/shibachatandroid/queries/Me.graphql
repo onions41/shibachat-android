@@ -3,11 +3,14 @@ query Me {
     id
     nickname
     receivedFRequests {
+      requesterId
       requester {
-        id
         nickname
       }
       status
+    }
+    sentFRequests {
+      ...SentFRequestFragment
     }
   }
 }

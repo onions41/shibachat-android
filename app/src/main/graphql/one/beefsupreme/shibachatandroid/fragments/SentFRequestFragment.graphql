@@ -1,0 +1,7 @@
+fragment SentFRequestFragment on FriendRequest {
+  requesteeId
+  requestee {
+    nickname
+  }
+  status
+}
