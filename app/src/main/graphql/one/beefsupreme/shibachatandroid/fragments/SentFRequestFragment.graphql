@@ -5,4 +5,5 @@ fragment SentFRequestFragment on FriendRequest {
     nickname
   }
   status
+  __typename
 }
