@@ -56,17 +56,21 @@ fun UserCard(
       modifier = Modifier.width(140.dp).padding(horizontal = 12.dp)
     )
 
-    Button(
-      onClick = { vm.handle(FRequestsUiEvent.SendFReqBtnClick(user.id)) },
-      enabled = sendFRequestResult is SendFRequestResult.Ready,
-      shape = CircleShape
-    ) {
-      Text(
-        text = "Send friend request",
-        modifier = Modifier.width(100.dp),
-        style = MaterialTheme.typography.button,
-        textAlign = TextAlign.Center
-      )
+    if (user.receivedFReqFromMe) {
+      Text("Already sent. Please be patient.")
+    } else {
+      Button(
+        onClick = { vm.handle(FRequestsUiEvent.SendFReqBtnClick(user.id)) },
+        enabled = sendFRequestResult is SendFRequestResult.Ready,
+        shape = CircleShape
+      ) {
+        Text(
+          text = "Send friend request",
+          modifier = Modifier.width(100.dp),
+          style = MaterialTheme.typography.button,
+          textAlign = TextAlign.Center
+        )
+      }
     }
   }
 }

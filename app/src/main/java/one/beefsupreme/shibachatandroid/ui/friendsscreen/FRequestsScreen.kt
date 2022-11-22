@@ -44,9 +44,9 @@ fun FRequestsScreen(
           items = (allUsersResult as AllUsersResult.Success).data.users,
           key = { user -> "user-${user.id}" }
         ) { user ->
-          // Display the card only if the user did not already get a fRequest from me.
-          if (!user.receivedFReqFromMe) {
-            UserCard(vm, user) // TODO Need to pass vm in here to make the sendFReqBtn work
+          // Display the card only if the user is not me
+          if (user.id != vm.loginState.meId) {
+            UserCard(vm, user)
             Log.v(TAG, user.toString())
           }
         }
