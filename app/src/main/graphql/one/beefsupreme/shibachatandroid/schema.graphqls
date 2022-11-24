@@ -43,13 +43,13 @@ type User {
 }
 
 type FriendRequest {
-  requester: User!
+  me: User!
 
-  requesterId: Int!
+  meId: Int!
 
-  requestee: User!
+  friend: User!
 
-  requesteeId: Int!
+  friendId: Int!
 
   status: FRequestStatus!
 }

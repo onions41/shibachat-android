@@ -1,5 +1,8 @@
 mutation SendFRequest($friendId: Int!) {
   sendFRequest(friendId: $friendId) {
+    __typename
+    meId
+    friendId
     ...SentFRequestFragment
   }
 }
