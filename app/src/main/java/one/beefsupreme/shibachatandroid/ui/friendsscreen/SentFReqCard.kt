@@ -26,7 +26,7 @@ import one.beefsupreme.shibachatandroid.R
 
 @Composable
 fun SentFReqCard(
-//  vm: FRequestsViewModel, // I'll need this later when adding buttons
+  vm: FRequestsViewModel,
   sentFRequest: MeQuery.SentFRequest
 ) {
   Row(
@@ -55,12 +55,12 @@ fun SentFReqCard(
     )
 
     Button(
-      onClick = {},
-      enabled = true,
+      onClick = { vm.handle(FRequestsUiEvent.CancelFReqBtnClick(sentFRequest.friendId)) },
+      enabled = vm.cancelFRequestResult is CancelFRequestResult.Ready,
       shape = CircleShape
     ) {
       Text(
-        text = "ABC",
+        text = "Cancel request",
         modifier = Modifier.width(100.dp),
         style = MaterialTheme.typography.button,
         textAlign = TextAlign.Center

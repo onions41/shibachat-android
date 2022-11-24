@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 import one.beefsupreme.shibachatandroid.AllUsersQuery
 import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.MeQuery
+import one.beefsupreme.shibachatandroid.CancelFRequestMutation
 import one.beefsupreme.shibachatandroid.SendFRequestMutation
 import one.beefsupreme.shibachatandroid.repo.LoginState
 import one.beefsupreme.shibachatandroid.repo.Me
@@ -30,8 +31,8 @@ import javax.inject.Inject
 private const val TAG = "**FRequestsViewModel**"
 
 sealed class FRequestsUiEvent {
-//  object RefreshBtnClick: FriendsUiEvent()
   class SendFReqBtnClick(val friendId: Int): FRequestsUiEvent()
+  class CancelFReqBtnClick(val friendId: Int) : FRequestsUiEvent()
 }
 
 sealed class AllUsersResult {
@@ -41,10 +42,17 @@ sealed class AllUsersResult {
 }
 
 sealed class SendFRequestResult {
-  object Ready: SendFRequestResult()
+  object Ready : SendFRequestResult()
   object Loading : SendFRequestResult()
   class Failed(val error: ApolloException) : SendFRequestResult()
   class Success(val data: SendFRequestMutation.Data) : SendFRequestResult()
+}
+
+sealed class CancelFRequestResult {
+  object Ready : CancelFRequestResult()
+  object Loading : CancelFRequestResult()
+  class Failed(val error: ApolloException) : CancelFRequestResult()
+  class Success(val data: CancelFRequestMutation.Data) : CancelFRequestResult()
 }
 
 @HiltViewModel
@@ -64,11 +72,16 @@ class FRequestsViewModel @Inject constructor(
     by mutableStateOf(SendFRequestResult.Ready)
       private set
 
+  var cancelFRequestResult: CancelFRequestResult
+    by mutableStateOf(CancelFRequestResult.Ready)
+      private set
+
   init { allUsers() }
 
   fun handle(event: FRequestsUiEvent) {
     when (event) {
       is FRequestsUiEvent.SendFReqBtnClick -> sendFRequest(event.friendId)
+      is FRequestsUiEvent.CancelFReqBtnClick -> cancelFRequest(event.friendId)
     }
   }
 
@@ -180,6 +193,67 @@ class FRequestsViewModel @Inject constructor(
 
       // Flips the result object back to Ready
       sendFRequestResult = SendFRequestResult.Ready
+    }
+  }
+
+  private fun cancelFRequest(friendId: Int) {
+    viewModelScope.launch(appDispatchers.io) {
+      cancelFRequestResult = CancelFRequestResult.Loading
+
+      cancelFRequestResult = try {
+        val data = apolloClient
+          .mutation(CancelFRequestMutation(friendId))
+          .execute()
+          .dataAssertNoErrors
+
+        /** Modifying MeQuery cache for (sentFRequests)*/
+        // Reads MeQuery data out of the cache.
+        var meData = apolloClient.apolloStore.readOperation(MeQuery())
+        // Turns it into a mutable list
+        val sentFRequests = meData.user.sentFRequests.toMutableList()
+        // removes the sentFRequest from sentFRequests
+        val i = sentFRequests.indexOfFirst { it.friendId == friendId && it.meId == loginState.meId }
+        if (i >= 0 ) { // Above returns -1 if not found
+          sentFRequests.removeAt(i)
+        }
+
+        // Alters meData by replacing the sentFRequests list with the shortened list
+        meData = meData.copy(
+          user = meData.user.copy(
+            sentFRequests = sentFRequests.toList()
+          )
+        )
+        // Writes the altered MeQuery data into the cache
+        apolloClient.apolloStore.writeOperation(
+          operation = MeQuery(),
+          operationData = meData
+        )
+
+        /** Modifying AllUsersQuery cache */
+        val allUsersData = apolloClient.apolloStore.readOperation(AllUsersQuery())
+
+        // Replaces the user element to whom the friend request was sent with the
+        // copy of that element with the property receivedFReqFromMe changed to false
+        val users = allUsersData.users.toMutableList()
+        val j = users.indexOfFirst { it.id == friendId }
+        if (j >= 0 ) { // Above returns -1 if not found
+          val friend = users.removeAt(j)
+          users.add(j, friend.copy(receivedFReqFromMe = false))
+        }
+
+        apolloClient.apolloStore.writeOperation(
+          operation = AllUsersQuery(),
+          operationData = allUsersData.copy(users = users.toList())
+        )
+
+        CancelFRequestResult.Success(data)
+      } catch (error: ApolloException) {
+        Log.e(TAG, error.message.toString())
+        CancelFRequestResult.Failed(error)
+      }
+
+      // Flips the result object back to Ready
+      cancelFRequestResult = CancelFRequestResult.Ready
     }
   }
 }

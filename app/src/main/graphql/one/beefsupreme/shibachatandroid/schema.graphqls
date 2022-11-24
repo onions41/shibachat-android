@@ -6,6 +6,8 @@ type Mutation {
   logout: Boolean!
 
   sendFRequest(friendId: Int!): FriendRequest!
+
+  cancelFRequest(friendId: Int!): FriendRequest!
 }
 
 type Query {

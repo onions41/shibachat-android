@@ -66,7 +66,7 @@ fun FRequestsScreen(
           items = meResult.data.user.sentFRequests,
           key = { sentFRequest -> "sentFRequest-${sentFRequest.friendId}" }
         ) {sentFRequest ->
-          SentFReqCard(sentFRequest = sentFRequest)
+          SentFReqCard(vm, sentFRequest)
         }
       } else {
         item(key = "me-loading-indicator") {
