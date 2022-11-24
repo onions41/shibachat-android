@@ -41,7 +41,7 @@ fun FriendsScreen(
       if (meResult is MeResult.Success) {
         items(
           items = meResult.data.user.receivedFRequests,
-          key = { receivedFRequest -> "receivedFRequest-${receivedFRequest.requesterId}" }
+          key = { receivedFRequest -> "receivedFRequest-${receivedFRequest.meId}" }
         ) { receivedFRequest ->
           ReceivedFReqCard(receivedFRequest)
         }

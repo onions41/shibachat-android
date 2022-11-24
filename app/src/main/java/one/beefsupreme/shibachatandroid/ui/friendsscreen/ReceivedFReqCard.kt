@@ -51,7 +51,7 @@ fun ReceivedFReqCard(fRequest: MeQuery.ReceivedFRequest) {
     )
 
     Text(
-      text = "${fRequest.requester.nickname} wants to be your friend. Do you accept?",
+      text = "${fRequest.me.nickname} wants to be your friend. Do you accept?",
       style = MaterialTheme.typography.caption,
       modifier = Modifier.width(140.dp)
     )

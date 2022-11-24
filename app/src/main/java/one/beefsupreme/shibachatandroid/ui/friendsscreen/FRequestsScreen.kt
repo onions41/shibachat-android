@@ -64,7 +64,7 @@ fun FRequestsScreen(
       if (meResult is MeResult.Success) {
         items(
           items = meResult.data.user.sentFRequests,
-          key = { sentFRequest -> "sentFRequest-${sentFRequest.requesteeId}" }
+          key = { sentFRequest -> "sentFRequest-${sentFRequest.friendId}" }
         ) {sentFRequest ->
           SentFReqCard(sentFRequest = sentFRequest)
         }

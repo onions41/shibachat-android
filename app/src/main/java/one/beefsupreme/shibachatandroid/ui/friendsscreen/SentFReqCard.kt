@@ -49,7 +49,7 @@ fun SentFReqCard(
     )
 
     Text(
-      text = sentFRequest.sentFRequestFragment.requestee.nickname,
+      text = sentFRequest.sentFRequestFragment.friend.nickname,
       style = MaterialTheme.typography.body2,
       modifier = Modifier.width(140.dp).padding(horizontal = 12.dp)
     )

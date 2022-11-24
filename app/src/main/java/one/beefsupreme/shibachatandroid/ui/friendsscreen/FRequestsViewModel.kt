@@ -114,8 +114,8 @@ class FRequestsViewModel @Inject constructor(
         /** Modifying MeQuery cache (SentFRequest) */
         val ( // Grabs all properties of data.sendFRequest
           __typename,
-          requesterId,
-          requesteeId,
+          meId,
+          _, // would have been friendId, but that is already available as parameter
           sentFRequestFragment
         ) = data.sendFRequest // is SendFRequestMutation.SendFRequest
 
@@ -124,8 +124,8 @@ class FRequestsViewModel @Inject constructor(
         // as SendFRequestMutation.SendFRequest
         val newSentFRequest = MeQuery.SentFRequest(
           __typename,
-          requesterId,
-          requesteeId,
+          meId,
+          friendId,
           sentFRequestFragment
         )
 
