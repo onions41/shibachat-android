@@ -46,7 +46,7 @@ fun FRequestsScreen(
         ) { user ->
           // Display the card only if the user is not me
           if (user.id != vm.loginState.meId) {
-            UserCard(vm, user)
+            SendFReqCard(vm, user)
             Log.v(TAG, user.toString())
           }
         }

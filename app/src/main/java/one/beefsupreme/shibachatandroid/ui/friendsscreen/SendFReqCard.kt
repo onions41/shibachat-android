@@ -25,7 +25,7 @@ import one.beefsupreme.shibachatandroid.AllUsersQuery
 import one.beefsupreme.shibachatandroid.R
 
 @Composable
-fun UserCard(
+fun SendFReqCard(
   vm: FRequestsViewModel,
   user: AllUsersQuery.User
 ) {
