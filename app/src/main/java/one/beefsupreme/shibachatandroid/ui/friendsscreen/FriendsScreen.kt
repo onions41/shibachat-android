@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
@@ -35,7 +36,15 @@ fun FriendsScreen(
       modifier = Modifier.padding(vertical = 4.dp)
     ) {
       item(key = "make-new-friends-card") {
-        MakeNewFriendsCard { navigator.navigate(FRequestsScreenDestination) }
+        MakeNewFriendsLinkCard { navigator.navigate(FRequestsScreenDestination) }
+      }
+
+      item(key = "refresh-button") {
+        Button(
+          onClick = {vm.handle(FriendsUiEvent.RefreshBtnClick)}
+        ) {
+          Text("Refresh")
+        }
       }
 
       if (meResult is MeResult.Success) {

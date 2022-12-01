@@ -7,7 +7,9 @@ import one.beefsupreme.shibachatandroid.AppDispatchers
 import one.beefsupreme.shibachatandroid.repo.Me
 import javax.inject.Inject
 
-sealed class FriendsUiEvent {}
+sealed class FriendsUiEvent {
+  object RefreshBtnClick: FriendsUiEvent()
+}
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
@@ -16,9 +18,11 @@ class FriendsViewModel @Inject constructor(
   val me: Me
 ): ViewModel() {
   fun handle(event: FriendsUiEvent) {
-//    when (event) {
-//      is FriendsUiEvent.RefreshBtnClick -> refresh()
-//      is FriendsUiEvent.SendFReqBtnClick -> sendFRequest(event.friendId)
-//    }
+    when (event) {
+      is FriendsUiEvent.RefreshBtnClick -> {
+        me.stop()
+        me.start()
+      }
+    }
   }
 }
