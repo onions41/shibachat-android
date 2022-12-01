@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.apollographql.apollo3.cache.normalized.watch
 import com.apollographql.apollo3.exception.ApolloException
 import dagger.Lazy
@@ -43,7 +45,9 @@ class MeImpl @Inject constructor(
 
   override fun start() {
     job = scope.launch {
-      apolloClient.get().query(MeQuery()).watch()
+      apolloClient.get().query(MeQuery())
+        .fetchPolicy(FetchPolicy.CacheAndNetwork)
+        .watch()
         .map {
           val data = it.data
           if (data?.user == null) {
