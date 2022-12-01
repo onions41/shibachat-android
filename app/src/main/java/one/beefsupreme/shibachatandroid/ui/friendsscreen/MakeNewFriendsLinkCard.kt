@@ -23,7 +23,7 @@ import one.beefsupreme.shibachatandroid.R
 import one.beefsupreme.shibachatandroid.ui.theme.ShibachatAndroidTheme
 
 @Composable
-fun MakeNewFriendsCard(handleClick: () -> Unit) {
+fun MakeNewFriendsLinkCard(handleClick: () -> Unit) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier
@@ -56,7 +56,7 @@ fun MakeNewFriendsCard(handleClick: () -> Unit) {
 fun MakeNewFriendsCardPreview() {
   ShibachatAndroidTheme {
     Surface {
-      MakeNewFriendsCard {}
+      MakeNewFriendsLinkCard {}
     }
   }
 }
