@@ -8,6 +8,8 @@ type Mutation {
   sendFRequest(friendId: Int!): FriendRequest!
 
   cancelFRequest(friendId: Int!): FriendRequest!
+
+  acceptFRequest(friendId: Int!): AcceptFReqResponse!
 }
 
 type Query {
@@ -42,6 +44,14 @@ type User {
   receivedFRequests: [FriendRequest!]!
 
   receivedFReqFromMe: Boolean!
+}
+
+type AcceptFReqResponse {
+  acceptedFRequest: FriendRequest!
+
+  mirroredFRequest: FriendRequest
+
+  friend: User!
 }
 
 type FriendRequest {

@@ -48,11 +48,12 @@ fun FriendsScreen(
       }
 
       if (meResult is MeResult.Success) {
+        // Received friend requests list
         items(
           items = meResult.data.user.receivedFRequests,
           key = { receivedFRequest -> "receivedFRequest-${receivedFRequest.meId}" }
         ) { receivedFRequest ->
-          ReceivedFReqCard(receivedFRequest)
+          ReceivedFReqCard(receivedFRequest, vm)
         }
       } else {
         item(key = "loading-indicator") {

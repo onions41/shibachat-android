@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -23,19 +22,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import one.beefsupreme.shibachatandroid.MeQuery
 import one.beefsupreme.shibachatandroid.R
-import one.beefsupreme.shibachatandroid.type.FRequestStatus
-import one.beefsupreme.shibachatandroid.ui.theme.ShibachatAndroidTheme
 
 @Composable
-fun ReceivedFReqCard(fRequest: MeQuery.ReceivedFRequest) {
+fun ReceivedFReqCard(
+  fRequest: MeQuery.ReceivedFRequest,
+  vm: FriendsViewModel
+) {
   Row(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
-    modifier = Modifier.fillMaxWidth()
+    modifier = Modifier
+      .fillMaxWidth()
       .height(65.dp)
       .padding(horizontal = 12.dp)
   ) {
@@ -57,7 +57,7 @@ fun ReceivedFReqCard(fRequest: MeQuery.ReceivedFRequest) {
     )
 
     Button(
-      onClick = {},
+      onClick = { vm.handle(FriendsUiEvent.AcceptFReqBtnClick(fRequest.meId)) },
       shape = CircleShape,
     ) {
       Text(
@@ -89,13 +89,13 @@ fun ReceivedFReqCard(fRequest: MeQuery.ReceivedFRequest) {
 //    Surface {
 //      ReceivedFReqCard(
 //        MeQuery.ReceivedFRequest(
-//          requester = MeQuery.Requester(
-//            id = 3,
-//            nickname = "Dwayne Johnson",
-//            __typename = "User"
-//          ),
+//          meId = 1,
+//          friendId = 2,
+//          me = MeQuery.Me(id = 1, nickname = "Homer", __typename = "User"),
 //          status = FRequestStatus.SENT,
-//        )
+//          __typename = "FriendRequest"
+//        ),
+//        vm = hiltViewModel()
 //      )
 //    }
 //  }
